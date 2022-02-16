@@ -44,7 +44,7 @@ class Database:
             await in_message.edit(content=json.dumps(data))
         else:
             data = {key: value, "type": value.__class__.__name__}
-            await self.__channel.send(json.dumps(data),supress=True)
+            await self.__channel.send(json.dumps(data),suppress=True)
         return
 
     async def get(self, key: str):
