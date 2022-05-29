@@ -1,5 +1,12 @@
-import json
+import importlib
 from functools import cached_property
+
+try:
+    from orjson import dumps
+except ImportError:
+    from json import dumps
+
+from typing import Any
 
 from .common_functions import key_check, search_key
 
@@ -12,14 +19,14 @@ class Database:
         )
 
     @cached_property
-    def get_channel_id(self):
+    def get_channel_id(self) -> int:
         return self.__channel.id
 
     @cached_property
-    def get_category_id(self):
+    def get_category_id(self) -> int:
         return self.__category.id
 
-    async def set(self, key: str, value):
+    async def set(self, key: str, value: Any) -> None:
         key_check(str(key))
         if len(str(value)) <= 0:
             raise ValueError("value should atleast have a length of 1")
@@ -41,13 +48,13 @@ class Database:
         if found_key:
             data[str(key)] = value
             data["type"] = value.__class__.__name__
-            await in_message.edit(content=json.dumps(data))
+            await in_message.edit(content=dumps(data).decode() if importlib.util.find_spec("orjson") else dumps(data))
         else:
             data = {key: value, "type": value.__class__.__name__}
-            await self.__channel.send(json.dumps(data),suppress=True)
+            await self.__channel.send(dumps(data).decode() if importlib.util.find_spec("orjson") else dumps(data))
         return
 
-    async def get(self, key: str):
+    async def get(self, key: str) -> Any:
         key_check(str(key))
         found_key, in_message, data = await search_key(key, self.__channel)
         if found_key:
@@ -65,7 +72,7 @@ class Database:
             value = None
         return value
 
-    async def delete(self, key: str):
+    async def delete(self, key: str) -> None:
         key_check(str(key))
         found_key, in_message, data = await search_key(key, self.__channel)
         if found_key:

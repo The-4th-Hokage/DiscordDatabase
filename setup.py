@@ -1,12 +1,26 @@
 # Always prefer setuptools over distutils
 # To use a consistent encoding
+import re
 from codecs import open
 from os import path
 
 from setuptools import find_packages, setup
 
+version = ''
+with open('DiscordDatabase/__init__.py') as f:
+    version = re.search(
+        r'^__version__\s*=\s*[\'"]([^\'"]*)[\'"]', f.read(), re.MULTILINE).group(1)
+
+if not version:
+    raise RuntimeError('version is not set')
+
 # The directory containing this file
 HERE = path.abspath(path.dirname(__file__))
+
+packages = [
+    "DiscordDatabase",
+]
+
 
 # Get the long description from the README file
 with open(path.join(HERE, "README.md"), encoding="utf-8") as f:
@@ -30,8 +44,11 @@ setup(
         "Operating System :: OS Independent",
     ],
     extras_require = {
-        'py-cord':  ["py-cord"]
+        'speed':  ["orjson"]
     },
     packages=find_packages(),
-    include_package_data=True
+    include_package_data=True,
+    package_data={"fluxpoint": ["py.typed"]},
+    version=version,
+    packages=packages
 )

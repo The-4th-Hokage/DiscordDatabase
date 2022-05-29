@@ -1,6 +1,11 @@
-import json
 import logging
 from json.decoder import JSONDecodeError
+from typing import Any, Tuple
+
+try:
+    from orjson import loads
+except ImportError:
+    from json import loads
 
 log = logging.getLogger(__name__)
 log.setLevel(logging.INFO)
@@ -11,18 +16,18 @@ formatter = logging.Formatter('%(asctime)s - %(message)s')
 ch.setFormatter(formatter)
 log.addHandler(ch)
 
-def str_is_illegal(s: str):
+def str_is_illegal(s: str) -> bool:
     # returns True if string contains any illegal characters
     legal_chars = ("_", "")
     return not all(map(lambda c: c in legal_chars or c.isalnum(), s))
 
 
-def format_string(s: str):
+def format_string(s: str) -> str:
     # replaces spaces and hyphens from string
     return s.casefold().replace("-", "").replace(" ", "")
 
 
-def key_check(key: str):
+def key_check(key: str) -> bool:
     if len(key) <= 0:
         raise ValueError("key should atleast have a length of 1")
 
@@ -32,12 +37,12 @@ def key_check(key: str):
 
     return True
 
-async def search_key(key: str, channel):
+async def search_key(key: str, channel) -> Tuple[bool, Any, Any]:
     found_key, in_message = None, None
     async for message in channel.history(limit=None):
         cnt = message.content
         try:
-            data = json.loads(str(cnt))
+            data = loads(str(cnt))
         except JSONDecodeError:
             logging.info(f"-----\nJSONDecodeerror: {cnt}\n-----")
             continue

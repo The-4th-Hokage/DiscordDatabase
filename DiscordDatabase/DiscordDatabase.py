@@ -1,14 +1,16 @@
+from typing import Any
+
 from DiscordDatabase.common_functions import format_string
 from DiscordDatabase.database import Database
 
 
 class DiscordDatabase:
     # This class takes care of creating categories and channels for the database
-    def __init__(self, client, guild_id) -> None:
+    def __init__(self, client, guild_id: int) -> None:
         self.guild_id = guild_id
         self.client = client
 
-    async def __create(self, category_name: str, channel_name: str):
+    async def __create(self, category_name: str, channel_name: str) -> Any:
         category_name = format_string(category_name)  # No spaces allowed
         channel_name = format_string(channel_name)  # No spaces allowed
 
@@ -19,8 +21,7 @@ class DiscordDatabase:
 
         ##### CATEGORY #####
         category = list(
-            filter(lambda c: c.name.casefold() == category_name,
-                   self.__GUILD.categories))
+            filter(lambda c: c.name.casefold() == category_name,self.__GUILD.categories))
         # Returns a list of categories which have same name as 'category_name'
         # Should return a list containg only one category with a unique name
         # Empty list means category does not exists
@@ -48,7 +49,7 @@ class DiscordDatabase:
 
         return category, channel
 
-    async def new(self, category_name, channel_name):
+    async def new(self, category_name, channel_name) -> Database:
         await self.client.wait_until_ready()
         self.__GUILD = self.client.get_guild(self.guild_id)
         category, channel = await self.__create(category_name, channel_name)
