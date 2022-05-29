@@ -4,7 +4,7 @@ import re
 from codecs import open
 from os import path
 
-from setuptools import find_packages, setup
+from setuptools import setup
 
 version = ''
 with open('DiscordDatabase/__init__.py') as f:
@@ -46,7 +46,6 @@ setup(
     extras_require = {
         'speed':  ["orjson"]
     },
-    packages=find_packages(),
     include_package_data=True,
     package_data={"fluxpoint": ["py.typed"]},
     packages=packages
