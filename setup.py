@@ -29,7 +29,7 @@ with open(path.join(HERE, "README.md"), encoding="utf-8") as f:
 # This call to setup() does all the work
 setup(
     name="DiscordDatabase",
-    version="0.1.2",
+    version=version,
     description="CRUD database for discord bots, using discord text channels to store data",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -49,6 +49,5 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     package_data={"fluxpoint": ["py.typed"]},
-    version=version,
     packages=packages
 )
